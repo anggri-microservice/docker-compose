@@ -1,0 +1,27 @@
+version: '3'
+services:
+
+  grpc-service:
+    restart: always
+    build:
+      args:
+        - "SRV_UID=${SRV_UID}"
+        - "SRV_GID=${SRV_GID}"
+      context: ../grpc-service
+      dockerfile: build/dev/Dockerfile
+    volumes:
+#      - /go/src/gitlab.com/pt-mai/grpc-service/vendor
+      - ../grpc-service/:/go/src/gitlab.com/anggri-microservice/grpc-service
+      - go-modules:/go/pkg/mod
+    environment:
+      - "GO_ENV=development"
+      - "SRV_DC_ONLINE=${SRV_DC_ONLINE}"
+      #- "SERVICES_GRPC_PORT=${SERVICES_GRPC_PORT}"
+      #- "JAEGER_AGENT_HOST=${JAEGER_AGENT_HOST}"
+      #- "JAEGER_AGENT_PORT=${JAEGER_AGENT_PORT}"
+    ports:
+      - 6001:5000
+      
+volumes:
+  go-modules:
+    external: true

@@ -11,7 +11,7 @@ services:
       dockerfile: build/dev/Dockerfile
     volumes:
 #      - /go/src/gitlab.com/pt-mai/grpc-service/vendor
-      - ../grpc-service/:/go/src/gitlab.com/anggri-microservice/grpc-service
+      - ../grpc-service/:/go/src/github.com/anggri-microservice/grpc-service
       - go-modules:/go/pkg/mod
     environment:
       - "GO_ENV=development"
@@ -20,7 +20,7 @@ services:
       #- "JAEGER_AGENT_HOST=${JAEGER_AGENT_HOST}"
       #- "JAEGER_AGENT_PORT=${JAEGER_AGENT_PORT}"
     ports:
-      - 6001:5000
+      - 7001:5000
       
 volumes:
   go-modules:

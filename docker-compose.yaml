@@ -1,17 +1,17 @@
 version: '3'
 services:
 
-  grpc-service:
+  users-service:
     restart: always
     build:
       args:
         - "SRV_UID=${SRV_UID}"
         - "SRV_GID=${SRV_GID}"
-      context: ../grpc-service
+      context: ../users-service
       dockerfile: build/dev/Dockerfile
     volumes:
-#      - /go/src/gitlab.com/pt-mai/grpc-service/vendor
-      - ../grpc-service/:/go/src/github.com/anggri-microservice/grpc-service
+#      - /go/src/gitlab.com/pt-mai/users-service/vendor
+      - ../users-service/:/go/src/github.com/anggri-microservice/users-service
       - go-modules:/go/pkg/mod
     environment:
       - "GO_ENV=development"
@@ -22,6 +22,43 @@ services:
     ports:
       - 7001:5000
       
+  db-dev:
+    build:
+      context: ../db-dev
+    restart: always
+    environment:
+      TZ: "Asia/Jakarta"
+      PG_PASSWORD: "${PG_PASSWORD}"
+      MONGO_USERNAME: "root"
+      MONGO_PASSWORD: "${MONGO_PASSWORD}"
+    volumes:
+      - ../db-dev/scripts:/var/lib/scripts
+      - ../db-dev/nats/volume:/var/lib/nats
+      - ../db-dev/redis/volume:/var/lib/redis
+      - db-dev_pgdata:/var/lib/postgresql/11/maidata
+      - db-dev_mongodb:/var/lib/mongodb
+    ports:
+      - 5433:5432
+      - 27027:27017
+      - 27018:27018
+      - 27019:27019
+      - 6831:6831
+      #Port Jaeger http:
+      - 16686:16686
+      - 14268:14268
+      #Port Nats Monitoring
+      - 8222:8222
+      #Port Nats server
+      - 4222:4222
+      #Port Redis
+      - 6379:6379
+
 volumes:
   go-modules:
+    external: true
+  db-dev_pgdata:
+    external: true
+  db-dev_mongodb:
+    external: true
+  filebeat-server:
     external: true
